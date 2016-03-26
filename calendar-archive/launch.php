@@ -4,8 +4,9 @@ Weapon::add('shield_lot_before', function() use($config) {
     // Hijack HTTP query of calendar based on `$config->archive_query` value ...
     if($query = Config::get('archive_query')) {
         $s = explode('-', $query . '-' . date('m'));
-        $_GET['calendar']['archive']['year'] = (int) $s[0];
-        $_GET['calendar']['archive']['month'] = (int) $s[1];
+        $ss = Calendar::$config['query'];
+        $_GET[$ss]['archive']['year'] = (int) $s[0];
+        $_GET[$ss]['archive']['month'] = (int) $s[1];
     }
     // Replace default calendar navigation URL with archive page URL ...
     Calendar::hook('archive', function($lot) use($config) {
