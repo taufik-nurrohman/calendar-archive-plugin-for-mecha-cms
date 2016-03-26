@@ -1,0 +1,27 @@
+Title: Archive Calendar
+Author: Taufik Nurrohman
+URL: http://latitudu.com
+Version: 1.0.0
+
+====
+
+> Widget arsip sebagai sebuah kalender.
+
+Plugin ini membutuhkan plugin [Kalender](http://mecha-cms.com/article/calendar-plugin "Calendar Plugin") untuk membuatnya bekerja.
+
+#### Penggunaan Dasar
+
+~~~ .php
+<?php echo Widget::calendar('archive'); ?>
+~~~
+
+#### Sebagai Blok Widget
+
+~~~ .php
+<?php echo Shield::chunk('block.widget', array(
+    'title' => $speak->widget->archives,
+    'content' => Widget::calendar('archive')
+)); ?>
+~~~
+
+<!-- block:donate -->
