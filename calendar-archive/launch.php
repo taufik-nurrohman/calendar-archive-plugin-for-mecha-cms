@@ -1,32 +1,11 @@
 <?php
 
-Weapon::add('shield_lot_before', function() use($config) {
-    // Hijack HTTP query of calendar based on `$config->archive_query` value ...
-    if($query = Config::get('archive_query')) {
-        $s = explode('-', $query . '-' . date('m'));
-        $ss = Calendar::$config['query'];
-        $_GET[$ss]['archive']['year'] = (int) $s[0];
-        $_GET[$ss]['archive']['month'] = (int) $s[1];
-    }
-    // Replace default calendar navigation URL with archive page URL ...
-    Calendar::hook('archive', function($lot) use($config) {
-        $y_p = $lot['prev']['year'];
-        $m_p = $lot['prev']['month'];
-        $y_n = $lot['next']['year'];
-        $m_n = $lot['next']['month'];
-        if($m_p < 10) $m_p = '0' . $m_p;
-        if($m_n < 10) $m_n = '0' . $m_n;
-        $lot['prev']['url'] = $config->url . '/' . $config->archive->slug . '/' . $y_p . '-' . $m_p;
-        $lot['next']['url'] = $config->url . '/' . $config->archive->slug . '/' . $y_n . '-' . $m_n;
-        return $lot;
-    });
-});
-
 // Make sure all plugins already loaded ...
 Weapon::add('plugins_after', function() use($config, $speak) {
     Calendar::hook('archive', function($lot, $year, $month, $id) use($config, $speak) {
         $the_year = Calendar::year($id, $year);
         $the_month = Calendar::month($id, $month);
+        // Load data if the calendar time is equal to current time
         if($the_year === $year && $the_month === $month) {
             $month_str = $month < 10 ? '0' . $month : (string) $month;
             if($files = Get::articles('DESC', 'time:' . $year . '-' . $month_str)) {
@@ -66,6 +45,25 @@ Weapon::add('plugins_after', function() use($config, $speak) {
                 unset($lot_o, $files);
             }
         }
+        // Replace default calendar navigation URL with archive page URL ...
+        $y_p = $lot['prev']['year'];
+        $m_p = $lot['prev']['month'];
+        $y_n = $lot['next']['year'];
+        $m_n = $lot['next']['month'];
+        if($m_p < 10) $m_p = '0' . $m_p;
+        if($m_n < 10) $m_n = '0' . $m_n;
+        $lot['prev']['url'] = $config->url . '/' . $config->archive->slug . '/' . $y_p . '-' . $m_p;
+        $lot['next']['url'] = $config->url . '/' . $config->archive->slug . '/' . $y_n . '-' . $m_n;
         return $lot;
     });
+});
+
+// Hijack HTTP query of calendar based on `$config->archive_query` value ...
+Weapon::add('shield_lot_before', function() use($config) {
+    if($query = Config::get('archive_query')) {
+        $s = explode('-', $query . '-' . date('m'));
+        $ss = Calendar::$config['query'];
+        $_GET[$ss]['archive']['year'] = (int) $s[0];
+        $_GET[$ss]['archive']['month'] = (int) $s[1];
+    }
 });
