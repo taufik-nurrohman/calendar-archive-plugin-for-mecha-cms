@@ -59,7 +59,7 @@ Weapon::add('plugins_after', function() use($config, $speak) {
 });
 
 // Hijack HTTP query of calendar based on `$config->archive_query` value ...
-Weapon::add('shield_lot_before', function() use($config) {
+Weapon::add('shield_lot_before', function() {
     if($query = Config::get('archive_query')) {
         $s = explode('-', $query . '-' . date('m'));
         $ss = Calendar::$config['query'];
